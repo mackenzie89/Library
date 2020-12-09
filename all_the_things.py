@@ -388,3 +388,673 @@ file = open('results.csv', 'w')
 #reading a directory
 #To list the contents of a folder we need another import statement:
 from os import listdir #at the top of your program
+
+########### Lecture 6 - Writing Functions #########################
+
+# To define a function: add the keyword def
+    # add the name of the function (same rules as with naming variables)
+    # add brackets
+    # indent the code that you wish to be part of the function
+
+#To use a function:
+# use its name followed by brackets
+getDate()
+    dateString = file_contents[1].partition(': ')[2]
+    year = dateString[4:8]
+    month = dateString[2:4]
+    day = dateString[0:2]
+    date = f"{day}/{month}/{year}“
+
+getDemographics()
+    demographics = file_contents[3].split(",")
+    name = demographics[0]
+    age = demographics[1]
+    normalised_gender = demographics[2].lower()
+    if "female" in normalised_gender:
+        gender = 2
+    else:
+        gender = 1
+
+#Defining a function does not execute its contents - You need to call it for that
+
+# Add a parameter inside the brackets
+# This is what’s coming from outside, from the caller
+# This is what the function does not know about
+# This is what will be changing every time the function is called
+#
+# So, when calling the function
+# len(myFiles) 	 x will be the value of myFiles
+# len(lines) 	 x will be the value of lines
+#
+# Compute the length of x, assuming that x will be some list (not a particular list)
+#
+# Return to the caller the result of the computation (keyword return)
+
+# Definition
+
+def wordCount(fileName, word)
+        ………
+# usage
+        wordCount(fileName, word) #or wordCount(theFile, w)
+
+#You can sort a list using sorted(aList) or aList.sort(). What’s the difference?
+# “sort” is affecting the list itself (in-place) and “sorted” gives you back another list
+
+#end of a function
+#It is better to return a value for the caller to print, rather than print inside the function.
+# Your function should be as generic as possible and make the least possible commitments
+def addition(a, b):
+        sum = a + b
+        print(sum)
+        print(“Summation
+        done”)
+#no return value vs
+def addition(a, b):
+        sum = a + b
+        return sum
+        print(“Summation
+        done”)
+# returns a value
+
+#A function defines its own scope. Variables have their own meaning (value) inside the function.
+        # Variables declared outside a function are not accessible inside the function
+#Variables declared with the keyword “global” are accessible anywhere in the file.
+#A function must be defined before being used (as with variables).
+
+#Importing from other files: Modules A file containing python code is called a module
+import demographics
+yourAge = demographics.getAge()
+
+#Three ways of importing/using definitions from a module
+# Import the whole module, use function qualified by their module
+import demographics
+yourAge = demographics.getAge()
+
+# Import some functions, use them unqualified
+from demographics import getAge, minAge
+yourAge = getAge()
+
+# Import all the functions from the module, use them unqualified
+from demographics import *
+yourAge = getGender()
+
+#In the random module there are many functions besides randint
+import random	 now functions must be qualified by random.
+
+random.shuffle(aSequence)	 randomly shuffles the elements of the sequence
+random.choice(aSequence) 	 returns one element from the sequence chosen 	randomly
+
+random.uniform(min, max)	 returns a sample (float) from a uniform distr
+random.normalvariate(mn, sd)	 returns a sample from a normal distr
+essentially identical to random.gauss(mn, sd)
+random.expovariate	 returns a sample from a exponential distr
+random.betavariate(a,b)	 returns a sample from a beta distr
+random.gammavariate	 returns a sample from a gamma distr
+
+#A module is just a .py file
+# A package is a directory (a folder) containing one or more modules (.py files)
+# A library contains one or more packages (often just one)
+# There is a ridiculous number of libraries out there
+# Some of the most useful for psychologists are:
+# numpy: scientific computing, linear algebra
+# scipy: uses and extends numpy, used for statistical analysis (yes t-test!). Look at scipy.stats
+# matplotlib: plotting package
+# PyGame: Used for 2D game development (and experiments if you’re brave)
+# NLTK: Natural Language Toolkit, advanced string manipulation useful in linguistics
+# Requests: contacting the web
+# PsychoPy: Used in experiments, especially psychophysics
+# PyQT: Used for UI design, coming in week 7
+# (Django)
+
+#Adding a library in PyCharm
+#Go to
+# File > Settings on Windows
+# PyCharm>Preferences on macOS
+# Then go to Project>Project Interpreter
+# Select the interpreter you want to add the library to
+# usually just a single interpreter. If more than one, make sure it’s Python3xxx not Python2xxx
+# Click the plus icon (right on Windows, lower left on macOS)
+# Type in the library name (be careful! there are many similar names)
+# Make sure that the option to “install to user’s site packages directory”, at lower left is NOT selected.
+# Click Install Package
+# Wait for PyCharm to install the library and update the interpreter
+
+
+######################## Lecture 7 OOP and UI ##########################
+
+#With Object-Oriented Programming (OOP) you go a step further:
+# you define new types/classes (like int, str and List) that
+# have their own properties (variables)
+# have their own behaviour (methods)
+
+myStr = “one two three four”
+spaceAt = myStr.index(“ “)
+nums = myStr.split(“, “)
+nums.append(“five”)
+nums.sort()
+
+
+
+# first argument in every method, is a reference to the object – usually named self
+#Within the class the attribute is accessed through “self”, i.e. “the walls of current object”
+
+#definition
+        class House:
+            def Build(self):
+                self.numOfWalls = 4
+
+            def Demolish(self):
+                self.numOfWalls = 0
+# usage
+myHouse = House()
+myHouse.Build()
+print(myHouse.numOfWalls) # will print 4
+
+myHouse.Demolish()
+print(myHouse.numOfWalls) # will print 0
+
+# Outside the class it is accessed by the variable name
+        # i.e. “the walls of that object”
+
+#accessing attributes:
+
+#Internal call - Within the class the variable or method is accessed through self (mine)
+#External call - Outside the class the variable or method is accessed through the variable name
+
+#We create an object by using the class name followed by brackets:
+aHouse = House()
+myBoxer = Boxer()
+# There’s a special method __init__ that is called when an object is created
+#With __init__ you can set things up before any other method is called
+
+        class Animal():
+            def __init__(self):
+                self.weight = 40
+
+            def Eat(self, calories):
+                self.weight = self.weight + calories
+
+        anAnim = Animal()
+        anAnim.Eat(20)
+
+#We can also have arguments in the constructor that parametrize the way the object is initialized
+
+    class Animal():
+        def __init__(self, startingWeight):
+            self.weight = startingWeight
+
+        def Eat(self, calories):
+            self.weight = self.weight + calories
+
+
+    aSmallAnimal = Animal(4)
+    aHugeAnimal = Animal(1400)
+
+#classes -defining the parent
+
+#A class without parent (doesn’t inherit anything)
+class Orphan:
+   def MethodA(self):
+
+    #Classes with parents
+    class Dog(Animal)
+        def Run(self):
+            ………
+
+        def Walk(self):
+            ………
+
+    class Boxer(Dog):
+        def Snore(self):
+           ………
+
+#overriding a method
+#Sometimes we want to inherit the majority of the structure of a class.so we’ll extend that class (subclass),
+class NewClass(OldClass):
+
+#Accessing the parent: super()
+super() #to access the parent version
+
+#GUI interfacing with the code
+#When you drag a button into a window:
+#A QPushButton object is created:
+pushButton = QPushButton()
+#Certain properties of the button are set:
+pushButton.X = 350
+pushButton.Y = 100
+pushButton.Width = 170
+pushButton.Height = 51
+pushButton.setText(“PushButton”)
+#When you double click to change the text
+pushButton.setText(“some Text”)
+#When you drag around:
+pushButton.X = 500
+
+
+################ Lecture 8 - Interacting with GUIs ############################
+
+
+from PyQt5 import uic #Import PyQt modules
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5.QtWidgets import *
+
+QApplication.setAttribute(Qt.AA_EnableHighDpiScaling) #Create a QApplication: controls the execution of your UI app
+app = QApplication([])
+
+window = uic.loadUi("mywindow.ui") #Import your interface
+
+# Your code here!
+
+window.show() #Make the main window visible
+app.exec_() #Execute your application and wait until it exits (user clicks X button)
+
+#make sure .ui file is in the same folder as your .py code
+
+#All widgets are properties of the window, e.g.
+window.buttonPlease = QPushButton() #nb window is just a variable name
+
+#accessing widgets
+        window = uic.loadUi("mywindow.ui")
+
+        # Get input for name and age
+        userName = window.txtName.text() # variable = window.nameofwidget.nameoftheproperty()
+
+        userAge = window.txtAge.text()
+
+        # set text in lblWelcome label
+        window.lblWelcome.setText(“Hello!”)
+
+        window.show()
+        app.exec_()
+
+#You get the value of the property by:
+window.widgetName.propertyName()
+#You set the value of the property by:
+window.widgetName.setPropertyName()
+
+
+# Examples:
+
+    window.label.text()    window.label.setText(“new text goeshere”)
+    window.label.wordWrap()    window.label.setWordWrap(False)
+    window.label.margin()     window.label.setMargin(20)
+    window.lineEdit.text()     window.lineEdit.setText(“strange choice”)
+    window.lineEdit.placeHolderText()  window.lineEdit.setPlaceHolder(“Please write something”)
+
+    #exceptions
+    window.checkbox.isChecked()     window.checkbox.setChecked(True)
+    window.myWidget.isVisible()     window.myWidget.show() /  window.myWidget.hide() #shows or hides widget
+
+#Getting and setting properties
+
+#Font
+    newFont = QFont("Arial", 12) # QFont("font family", font size
+    window.label.setFont(newFont)
+
+#Geometry
+
+   newDimensions = QRect(200, 300, 100, 30) # QRect(left, top, width, height)
+   window.label.setGeometry(newDimensions) # can also do window.label.setGeometry(200,300,100,30)
+
+#Getting and setting Colours
+aLabel = window.label # get the widget
+aLabel.setAutoFillBackground(True)
+labelColours = aLabel.palette()
+
+
+#set the colour of the palette
+labelColours.setColor(QPalette.Window, QColor(”red”))
+#get the palette #QPalette.Window, QPalette.Text, QPalette.Base etc
+#and the colour using a QColour object, e.g. QColour(“red”) or QColour(255, 0, 0) - RGB
+aLabel.setPalette(labelColours)
+
+#Signals
+        # QWidget	 show, hide 	(so, all widgets that inherit from Qwidget emit these signals)
+        # QPushButton   	 clicked
+        # QRadioButton	 clicked
+        # QPlainTextEdit 	 textChanged
+
+        # QLineEdit  	 textChanged(String)  i.e. the text is emitted with the signal
+        # QSpinBox	 valueChanged(int)
+        # QComboBox	 currentIndexChanged(int) or  currentIndexChanged(String)
+
+#To react to a signal:
+sender.signal.connect(ourFunction) # thewidget.thesignal.connect(thenameofourfuncation)
+window.aButton.clicked.connect(updateText)
+
+# example: error label
+
+PyQt5 import uic
+from PyQt5.QtCore import *from PyQt5.QtGui import *from PyQt5.QtWidgets import *
+
+app = QApplication([])
+
+window = uic.loadUi("demographics.ui")
+
+window.lblError.hide() #hides label on window opening
+
+def checkText():#defines function of checking text and showing error message if name is blank
+	if window.txtName.text()== "" :
+		 window.lblError.setText("Please input your name before clicking submit")
+		 window.lblError.show()
+	else:
+		 window.lblError.hide()
+
+window.btnSubmit.clicked.connect(checkText) #checks name on click of submit button
+
+
+window.show() #executes showing the window
+app.exec_() #runs the code until X is clicked
+
+#signal carrying information
+
+#Sometimes the signal is passing arguments too. For example, the textChanged signal (lineEdit Widget) passes the text that the user has inputted
+#In that case the function you connect to, must have the correct number (and type) of arguments, otherwise it will not be called.
+
+window = uic.loadUi("demographics.ui")
+
+window.lblError.setText("")
+
+def nameChanged(newText):
+
+window.lblError.setText(newText)
+window.txtName.textChanged.connect(nameChanged)
+window.show()
+app.exec_()
+
+#Common Signals
+window.aButton.clicked.connect(onUserClick)
+window.aButton.pressed.connect(onMouseDown)
+window.aButton.released.connect(onMouseUp)
+window.checkbox.stateChanged.connect(onStateChanged)  #-- requires “state” argument (0 is unchecked, 2 is checked)
+window.txtControl.textChanged.connect(onEdit) #-- requires “text” argument
+window.txtControl.selectionChanged.connect(onTextSelected) #-- requires “text” argument
+window.slider.valueChanged.connect(onSliderDragged) #– requires “value” argument
+window.combobox.currentIndexChanged.connect(onChange) #– requires “index” argument
+
+#Sometimes you have one slot for many signals e.g. many similar buttons calling the same function to avoid code duplication
+window.sender() #If you want to know which of them sent the signal, use window.sender() inside the slot function, i.e. the funciton handling the click, event the textChanged event etc
+def aButtonClicked():
+	theClickedOne = window.sender()
+
+#Remember: functions can’t access variables declared outside their scope: Solution Global Variables
+
+name = None
+def onSubmit():
+	global name
+	name = window.txtName.text()
+
+window.btnSubmit.clicked.connect(onSubmit)
+
+#this will work, but global variables are not ideal – may lead to variable names clashing etc…
+# Avoid global! Solution: Write Object oriented code
+
+def __init__():
+	self.name = none
+	self.window.btnSubmit.clicked.connect(onSubmit)
+
+
+def onSubmit():
+	self.name = self.window.txtName.text()
+
+
+#Alternatively make variables properties of your window
+
+window.name = “Christos”
+def onSubmit():
+	window.txtName.setText(window.name)
+
+window.btnSubmit.clicked.connect(onSubmit)
+
+#Qtimer (not a widget)
+
+    #To use it:create a new QTimer object
+    myTimer = QTimer()
+    # connect its “timeout” signal to the function you want to repeat
+    myTimer.timeout.connect(funToRepeat)
+    # start the timer, indicating the interval in milliseconds
+    myTimer.start(2000) # execute funToRepeat every 2 seconds
+    # Some useful methods of QTimer:
+    myTimer.setInterval(xxx) # change the interval
+    myTimer.setSingleShot(True) #will fire once after the interval
+    myTimer.stop() # stop it (e.g. after a countdown)
+
+#Creating and adding a widget in code
+
+aLabel = QLabel(window)
+
+#now the label is created and added but it has no text, size or position
+#simply set the properties as before
+aLabel.setText(“In code!”)
+aLabel.setGeometry(200, 40, 100, 30)
+
+#Adding widgets late and showing them
+    #Any widget added after window.show() will be invisible.
+    ##Your code here!
+window.show()
+
+################ Lecture 9 ############################
+
+#Containers for experiments
+
+#QStackedWidget
+
+children() #gives you access to a list of QWidgets (pages) + a layout object
+    window.nextButton == window.container.children()[0]
+count() #tells you how many pages you have
+currentIndex() #tells you which widget in the list is currently visible - returns integer
+setCurrentIndex(num) #to go to a page - useful for moving to next page button
+        window.myStackedOne.setCurrentIndex(window.myStackedOne.setCurrentIndex()+1) #example of how to use to increment the page
+
+#creating your own widgets
+
+#e.g want a button that displays images - in python picture can only be a label. Therefore need to create own widget
+
+#Start from an existing widget and make a subclass to override with your needs/add functionality
+
+   class Dog(): #parentclass
+       def __init__(self, energyRate): #setting the constructor
+           self.energyConsumptionRate = energyRate
+           self.position = [0, 0]
+           self.thing = None
+
+       def sleep(self): #always have self at the beginning
+           self.energyConsumptionRate = 0.1 #always have self at the beginning
+
+       def goToThing(self, anObject):
+           self.position = anObject.position
+
+       def goBack(self):
+           self.position = [0, 0]
+
+       def grabThing(self, aThing):
+           self.thing = aThing
+
+#If you define a new __init__ in your subclass, you should call the parent’s initialiser in your new definition (by including the line “super().__init__()”, which will call & execute the __init__ you are overwriting). This is a way of keeping the old __init__ but then adding any new properties you might want to include in your subclass.
+
+
+#creating the subclass
+
+   class Bulldog(Dog): #adds method in addition to the parent class
+       def barkNonStop(self):
+           self.energyConsumptionRate = 0.9
+
+#creating a widget in code - create a widget library either in separate files or one
+
+   window = uic.loadUi(“mywindow.ui")
+   aLabel = QLabel(window) #now the label is created and added but it has no text, size or position
+   aLabel.setText(“In code!”) #simply set the properties as before
+   aLabel.setGeometry(200, 40, 100, 30)
+   window.show() #closes
+   app.exec_()
+
+#To change the background colour of a widget, e.g. QLabel we need to write many lines
+   window.myLabel.setAutoFillBackground(True)
+   myPalette = window.myLabel.palette()
+   myPalette.setColor(QPalette.Window, QColor(“red”))
+   window.mLabel.setPalette(myPalette)
+#what if part of our program is to change the colour of a label hundreds of times?
+#It’d be nice to simply write myLabel.setColour(“red”) but QLabel doesn’t have such method
+
+#create own Label .e.g for above
+
+
+class MyOwnLabel(QLabel): #creates subclass of label with my special properties
+
+       def __init__(self,container, text):
+           super().__init__(container) #as setting constuctor need to initialise parent too using super()
+           self.setText(text)
+
+       def setBackground(self, colour): #creating the function to set colour = needs use refer to self compared to function above
+           self.setAutoFillBackground(True)
+           myPalette = self.palette()
+           myPalette.setColor(QPalette.Window, QColor(colour))
+           self.setPalette(myPalette)
+
+#best practice to create in separate file and import it
+
+#making a label blinkable - animations use timings
+
+lblColour = ColouredLabel(window)
+lblColour.setText("I have colour")
+lblColour.setGeometry(200, 40, 300, 80)
+lblColour.blink("yellow“, “blue”)
+
+   class ColouredLabel(QLabel): #creating new subclass of QLabel
+       def setColour(self, colorString):
+           self.setAutoFillBackground(True)
+            myPalette = self.palette()    myPalette.setColor(QPalette.Window, QColor(colorString))    self.setPalette(m
+           yPalette)
+
+       def blink(self, color1, color2): #defining the blink function
+           self.blinkColour1 = color1
+           self.blinkColour2 = color2
+           self.currentColour = color1
+           self.blinkTimer = QTimer()
+           self.blinkTimer.timeout.connect(self.onBlink)
+           self.blinkTimer.start(500)
+
+       def onBlink(self):
+           if self.currentColour == self.blinkColour1:
+               self.currentColour = self.blinkColour2
+           else:
+               self.currentColour = self.blinkColour1
+           self.setColour(self.currentColour)
+
+#Can add even more arguments to give more control over how our label blinks
+
+def blink(self, color1, color2, speed=500, times = -1):
+	self.blinkColour1 = color1
+    self.blinkColour2 = color2
+    self.blinkFor = times #setting number of times to blink
+    self.currentBlink = 0 #starting counter
+	self.currentColour = color1 #defines current colour
+	self.blinkTimer = QTimer()
+	self.blinkTimer.timeout.connect(self.onBlink) #connect to signal
+	self.blinkTimer.start(speed)
+
+def onBlink(self):
+	if self.currentColour == self.blinkColour1:
+		self.currentColour = self.blinkColour2
+	else:
+		self.currentColour = self.blinkColour1
+	self.setColour(self.currentColour)
+
+	if self.currentBlink==self.blinkFor:
+     	self.blinkTimer.stop()
+     self.currentBlink += 1
+
+
+#Making a clickable label - only buttons can be clicked, but want a label (image) that can be clicked.
+
+#in a new py file: e.g. ClickableLabel.py or myWidgets.py
+
+    class ClickableLabel(QLabel):
+        clicked = pyqtSignal()
+
+        def mousePressEvent(self, mouseEvent):
+            self.clicked.emit()
+
+#in our main file:
+    from ClickableLabel import * #name of py file not class
+    ……
+    myLabel = ClickableLabel(window)
+    myLabel.setText("I have colour“)
+    myLabel.setGeometry(200, 40, 300, 80)
+    myLabel.clicked.connect(myFunctionToDoSmWhenLabelClicked)
+
+#creating a clickable label
+
+class ClickableLabel(QLabel):
+    clicked = pyqtSignal()
+
+    def mousePressEvent(self, mouseEvent):
+        self.clicked.emit() #will be triggered on any click
+
+
+    def mousePressRightClick(self, mouseEvent):
+        if mouseEvent.button() == 2: #will only emit on right click
+            self.clicked.emit()
+
+# The argument mouseEvent, is of type QMouseEvent with properties:
+# button():  the mouse button that caused the event, 1 for left click, 2 for right click
+# x(), y():  position of the cursor at the time of the event relative to its container
+# globalX(), globalY(): position of the cursor at the time of the event relative to the window
+
+
+#Example 4: A container that listens to the keyboard
+
+# in a new py file: e.g. KeyboardWidget.py or myWidgets.py
+
+class KeyboardWidget (QWidget): #Subclass a widget that is closest to our needs
+    keyPressed = pyqtSignal(str)
+
+    def keyPressEvent(self, keyEvent): #Extend the widget by adding functionality:
+        self.keyPressed.emit(keyEvent.text())
+
+# in our main file-
+from KeyboardWidget import * #name of py file not class
+
+myWidget = KeyboardWidget(window) #Create and add a KeyboardWidget to our window
+myWidget.setGeometry(200, 40, 500, 500)
+myWidget.setFocus() #otherwise keyPressEvent won’t be called
+myWidget.keyPressed.connect(myFunctionToDoSmWhenKeyIsPressed)
+
+#Focus
+
+window.focusWidget() #will return the widget that has the focus
+someWidget.setFocus() #will set the focus to someWidget (provided its window is active)
+#Makes sense to override mousePressEvent too, to control focus!
+
+
+#Animation
+
+def animate():
+    currentX = window.balloon.x()
+    window.balloon.setGeometry(currentX+10,130, 240, 240)
+timer = QTimer() #Create a QTimer that emits a signal every 50 milliseconds or so (depending who smooth you need the animation to be)
+timer.timeout.connect(animate) #In the slot connected to the QTimer edit the properties of the widgets you want to animate
+timer.start(50)
+
+#example
+def animate():
+    currentRight = window.balloon.x() + window.balloon.width()
+    if currentRight > window.pin.x():
+        window.balloon.hide()
+        window.pop.show()
+    else:
+        window.balloon.setGeometry(window.balloon.x() + 10, 130, 240, 240)
+
+
+window.pop.hide()
+timer = QTimer()
+timer.timeout.connect(animate)
+timer.start(50)
+
+# Layout - see ppt
+
+
+
+
+
